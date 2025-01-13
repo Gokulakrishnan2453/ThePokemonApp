@@ -1,14 +1,14 @@
 # ThePokemonApp
-##Overview
+## Overview
 The Pokemon App is a simple, interactive web application designed to display Pokemon information. Users can view different Pokemon and their details in an engaging and user-friendly interface.
-###Project Structure
+## Project Structure
 ├── README.md          # Project documentation
 ├── details.css        # Styles specific to the Pokemon details page
 ├── home.html          # Homepage of the app
 ├── pokemon.html       # Pokemon details page
 ├── styles.css         # Global styles for the app
 
-##Files Description
+## Files Description
 1. details.css
    This stylesheet contains the specific styles for the pokemon.html page. It includes the layout and styling for the Pokemon details section, ensuring the page is visually appealing.
 Key Features:
@@ -32,21 +32,21 @@ Key Features:
 Base styles for typography, buttons, and layout
 Shared components like headers and footers
 
-##Tech Stack
+## Tech Stack
 HTML5: For structuring the content.
 CSS3: For styling and layout.
 JavaScript: For fetching data dynamically from an external API.
 Responsive Design: Ensures compatibility across various devices and screen sizes.
 
-##Pre-requisites
+## Pre-requisites
 To run the app locally, ensure you have:
 A modern web browser (e.g., Chrome, Firefox, Edge)
 Git installed (optional, for cloning the repository)
 
-##Migration & Seed Database Steps
+## Migration & Seed Database Steps
 This app currently does not use a database. Future implementations may include database integration for storing Pokemon data.
 
-##Running the App
+## Running the App
 Clone the repository to your local machine:
 git clone https://github.com/Gokulakrishnan2453/ThePokemonApp.git
 Navigate to the project directory:
