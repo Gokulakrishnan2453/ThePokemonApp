@@ -1,7 +1,7 @@
 # ThePokemonApp
 ##Overview
 The Pokemon App is a simple, interactive web application designed to display Pokemon information. Users can view different Pokemon and their details in an engaging and user-friendly interface.
-Project Structure
+###Project Structure
 ├── README.md          # Project documentation
 ├── details.css        # Styles specific to the Pokemon details page
 ├── home.html          # Homepage of the app
@@ -48,9 +48,9 @@ This app currently does not use a database. Future implementations may include d
 
 ##Running the App
 Clone the repository to your local machine:
-git clone https://github.com/your-repo/pokemon-app.git
+git clone https://github.com/Gokulakrishnan2453/ThePokemonApp.git
 Navigate to the project directory:
-cd pokemon-app
+cd ThePokemonApp
 Open home.html in your browser to start exploring the app:
 On Windows: Right-click the file and select "Open with" -> Your preferred browser.
 On Mac/Linux: Use a file manager or browser to open the file.
