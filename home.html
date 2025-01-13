@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poképedia</title>
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+<body>
+    <h1><span style="color:red" >Poke</span>pedia</h1>
+    <div class="controls">
+        <input type="text" id="search" placeholder="Search Pokémon">
+        <select id="filter">
+            <option value="">Filter by Type</option>
+            <option value="grass">Grass</option>
+            <option value="fire">Fire</option>
+            <option value="water">Water</option>
+            <option value="bug">Bug</option>
+            <option value="ice">Ice</option>
+            <!-- Add more types as needed -->
+        </select>
+        <button id="sortName">Sort by Name</button>
+    </div>
+    <div class="pokemon-grid" id="pokemonGrid">
+        <!-- Pokémon cards will be rendered here -->
+    </div>
+    <div class="pagination">
+        <button id="prevPage">Previous</button>
+        <button id="nextPage">Next</button>
+    </div>
+
+    <script>
+        const pokemonGrid = document.getElementById('pokemonGrid');
+        const searchInput = document.getElementById('search');
+        const filterSelect = document.getElementById('filter');
+        const sortNameBtn = document.getElementById('sortName');
+        const prevPageBtn = document.getElementById('prevPage');
+        const nextPageBtn = document.getElementById('nextPage');
+
+        let allPokemon = [];
+        let filteredPokemon = [];
+        let currentPage = 1;
+        const pageSize = 10;
+
+        async function fetchPokemon() {
+            const promises = [];
+            for (let i = 1; i <= 151; i++) {
+                promises.push(fetch(`https://pokeapi.co/api/v2/pokemon/${i}`).then(res => res.json()));
+            }
+            allPokemon = await Promise.all(promises);
+            filteredPokemon = [...allPokemon];
+            renderPokemon();
+        }
+
+        function renderPokemon() {
+            pokemonGrid.innerHTML = '';
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            const pokemonToShow = filteredPokemon.slice(start, end);
+
+            pokemonToShow.forEach(pokemon => {
+                const types = pokemon.types.map(type => type.type.name).join(', ');
+                const card = document.createElement('div');
+                card.className = 'pokemon-card';
+                card.innerHTML = `
+                    <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+                    <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
+                    <p>ID: ${pokemon.id}</p>
+                    <p>Type: ${types}</p>
+                `;
+                card.onclick = () => {
+                    window.location.href = `pokemon.html?id=${pokemon.id}`;
+                };
+                pokemonGrid.appendChild(card);
+            });
+        }
+
+        function filterPokemon() {
+            const searchText = searchInput.value.toLowerCase();
+            const selectedType = filterSelect.value;
+
+            filteredPokemon = allPokemon.filter(pokemon => {
+                const matchesSearch = pokemon.name.includes(searchText);
+                const matchesType = selectedType ? pokemon.types.some(type => type.type.name === selectedType) : true;
+                return matchesSearch && matchesType;
+            });
+
+            currentPage = 1;
+            renderPokemon();
+        }
+
+        function sortPokemonByName() {
+            filteredPokemon.sort((a, b) => a.name.localeCompare(b.name));
+            renderPokemon();
+        }
+
+        function nextPage() {
+            if (currentPage * pageSize < filteredPokemon.length) {
+                currentPage++;
+                renderPokemon();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPokemon();
+            }
+        }
+
+        searchInput.addEventListener('input', filterPokemon);
+        filterSelect.addEventListener('change', filterPokemon);
+        sortNameBtn.addEventListener('click', sortPokemonByName);
+        nextPageBtn.addEventListener('click', nextPage);
+        prevPageBtn.addEventListener('click', prevPage);
+
+        fetchPokemon();
+    </script>
+</body>
+</html>

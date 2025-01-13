@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Details</title>
+    <link rel="stylesheet" href="details.css">
+</head>
+<body>
+    <h1>Pokémon Details</h1>
+      <!-- Home button -->
+      <a href="home.html" class="home-btn" style="text-decoration: none;padding: 10px 10px; border-radius: 30px;">Home</a>
+    <div class="pokemon-details" id="pokemonDetails">
+        <!-- Pokémon details will be rendered here -->
+    </div>
+   
+    <h2>Similar Pokémon</h2>
+    <div class="similar-pokemon">
+        <div class="pokemon-grid" id="similarPokemonGrid">
+            <!-- Similar Pokémon will be rendered here -->
+        </div>
+    </div>
+
+    <script>
+        const pokemonDetails = document.getElementById('pokemonDetails');
+        const similarPokemonGrid = document.getElementById('similarPokemonGrid');
+
+        const queryParams = new URLSearchParams(window.location.search);
+        const pokemonId = queryParams.get('id');
+
+        // Fetch Pokémon details
+        async function fetchPokemonDetails(id) {
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+            const data = await response.json();
+            renderPokemonDetails(data);
+            fetchSimilarPokemon(data.types.map(type => type.type.name)); // Pass Pokémon types
+        }
+
+        // Render Pokémon details
+        function renderPokemonDetails(pokemon) {
+            const types = pokemon.types.map(type => type.type.name).join(', ');
+
+            // Extract stats from the Pokémon data
+            const stats = pokemon.stats.reduce((acc, stat) => {
+                acc[stat.stat.name] = stat.base_stat;
+                return acc;
+            }, {});
+
+            pokemonDetails.innerHTML = `
+                <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+                <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
+                <p>ID: ${pokemon.id}</p>
+                <p>Type: ${types}</p>
+                <p>Height: ${pokemon.height / 10} m</p>
+                <p>Weight: ${pokemon.weight / 10} kg</p>
+                <p>Defence: ${stats['defense'] / 10}</p>
+                <p>Attack: ${stats['attack'] / 10}</p>
+                <p>Special Attack: ${stats['special-attack'] / 10}</p>
+                <p>Special Defence: ${stats['special-defense'] / 10}</p>
+                <p>Speed: ${stats['speed'] / 10}</p>               
+            `;
+        }
+
+        // Fetch and render similar Pokémon
+        async function fetchSimilarPokemon(types) {
+            const promises = types.map(type =>
+                fetch(`https://pokeapi.co/api/v2/type/${type}`).then(res => res.json())
+            );
+            const typeData = await Promise.all(promises);
+
+            const similarPokemonIds = new Set(); // Use a set to avoid duplicates
+            typeData.forEach(type => {
+                type.pokemon.slice(0, 20).forEach(entry => {
+                    const id = entry.pokemon.url.split('/').filter(Boolean).pop();
+                    if (id !== pokemonId) similarPokemonIds.add(id); // Exclude the current Pokémon
+                });
+            });
+
+            const similarPokemonPromises = Array.from(similarPokemonIds).slice(0, 10).map(id =>
+                fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then(res => res.json())
+            );
+            const similarPokemon = await Promise.all(similarPokemonPromises);
+
+            renderSimilarPokemon(similarPokemon);
+        }
+
+        // Render similar Pokémon
+        function renderSimilarPokemon(pokemonList) {
+            pokemonList.forEach(pokemon => {
+                const types = pokemon.types.map(type => type.type.name).join(', ');
+                const card = document.createElement('div');
+                card.className = 'pokemon-card';
+                card.innerHTML = `
+                    <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+                    <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
+                    <p>ID: ${pokemon.id}</p>
+                    <p>Type: ${types}</p>
+                `;
+                card.onclick = () => {
+                    window.location.href = `pokemon.html?id=${pokemon.id}`;
+                };
+                similarPokemonGrid.appendChild(card);
+            });
+        }
+
+        // Initial fetch
+        fetchPokemonDetails(pokemonId);
+    </script>
+</body>
+</html>
