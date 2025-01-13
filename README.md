@@ -1,12 +1,12 @@
 # ThePokemonApp
 ## Overview
-The Pokemon App is a simple, interactive web application designed to display Pokemon information. Users can view different Pokemon and their details in an engaging and user-friendly interface.
+The Pokemon App is a simple, interactive web application that displays Pokemon information. Users can view different Pokemon and their details in an engaging and user-friendly interface.
 ## Project Structure
-├── README.md          # Project documentation
-├── details.css        # Styles specific to the Pokemon details page
-├── home.html          # Homepage of the app
-├── pokemon.html       # Pokemon details page
-├── styles.css         # Global styles for the app
+├── README.md         # Project documentation
+├── details.css       # Styles specific to the Pokemon details page
+├── home.html         # Homepage of the app
+├── pokemon.html      # Pokemon details page
+├── styles.css        # Global styles for the app
 
 ## Files Description
 1. details.css
